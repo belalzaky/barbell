@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Barbell">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0e0e0f">
+<title>Barbell</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0e0e0f;--surface:#1a1a1c;--border:#2a2a2d;
+  --text:#ededec;--muted:#a0a0a0;--subtle:#6e6e70;
+  --accent:#6c83ff;--on-accent:#0e0e0f;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);
+  --g:20px;--s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:20px;--s6:24px;--s7:32px;--s8:40px;--s9:48px;
+  --ease-out:cubic-bezier(0,0,.58,1);--ease-ios:cubic-bezier(.32,.72,0,1);
+  --d1:100ms;--d2:200ms;--d3:350ms;--d4:500ms;--tabh:52px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:17px;line-height:22px;
+ letter-spacing:-.013em;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;user-select:none;
+ display:flex;justify-content:center;align-items:center}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
+input{font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--border);
+ border-radius:10px;padding:var(--s3);width:100%;min-height:44px}
+input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+.n{font-family:var(--mono);font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;font-weight:500}
+.app{width:100%;max-width:412px;height:100%;max-height:920px;position:relative;overflow:hidden;background:var(--bg)}
+@media(min-width:520px)and(min-height:940px){.app{border:1px solid var(--border);border-radius:40px}}
+.eyebrow{font-size:13px;line-height:18px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--subtle)}
+.h-lg{font-size:34px;line-height:41px;font-weight:600;letter-spacing:-.02em}
+.h-md{font-size:22px;line-height:28px;font-weight:500;letter-spacing:-.018em}
+.sub{font-size:13px;line-height:18px;color:var(--muted)}
+.meta{font-size:13px;line-height:18px;color:var(--subtle)}
+.page{position:absolute;inset:0 0 var(--tabh) 0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+ padding:calc(var(--safe-t) + var(--s7)) var(--g) calc(var(--safe-b) + var(--s9));display:none}
+.page.on{display:block}
+.sect{font-size:13px;line-height:18px;letter-spacing:.06em;text-transform:uppercase;color:var(--subtle);
+ font-weight:500;padding-bottom:var(--s3);border-bottom:1px solid var(--border);margin:var(--s8) 0 0}
+.row{display:flex;align-items:center;justify-content:space-between;gap:var(--s4);padding:var(--s4) 0;
+ border-bottom:1px solid var(--border);width:100%;min-height:44px}
+.row .l{flex:1;min-width:0}
+.row .l .t{font-size:17px;line-height:22px}
+.row .l .s{font-size:13px;line-height:18px;color:var(--subtle);margin-top:2px}
+.row .r{flex-shrink:0;color:var(--muted);font-size:17px;text-align:right}
+.row .r .n{color:var(--text)}
+.row .r .d{font-size:13px;color:var(--subtle);margin-top:2px}
+.chev{color:var(--subtle);margin-left:var(--s2)}
+.card{border:1px solid var(--border);border-radius:16px;padding:var(--s6);margin-top:var(--s5)}
+.card .top{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s4)}
+.plist{margin:var(--s5) 0 var(--s6)}
+.plist div{display:flex;align-items:baseline;justify-content:space-between;padding:var(--s2) 0;
+ font-size:15px;line-height:20px;color:var(--muted)}
+.plist div .n{color:var(--text);font-size:15px}
+.btn{width:100%;height:56px;border-radius:14px;background:var(--accent);color:var(--on-accent);
+ font-size:17px;font-weight:600;display:flex;align-items:center;justify-content:center;
+ transition:transform var(--d1) var(--ease-out)}
+.btn:active{transform:scale(.97)}
+.btn.quiet{background:none;border:1px solid var(--border);color:var(--text);font-weight:500}
+.btn.danger{background:none;border:1px solid var(--border);color:var(--muted);font-weight:500;height:48px}
+.week{display:flex;gap:6px;margin-top:var(--s5)}
+.day{flex:1;text-align:center}
+.day .bar{height:44px;border-radius:3px;background:var(--border);position:relative;overflow:hidden}
+.day .bar i{position:absolute;left:0;right:0;bottom:0;background:var(--muted);border-radius:3px}
+.day.tdy .bar i{background:var(--text)}
+.day .lb{font-size:11px;line-height:13px;color:var(--subtle);margin-top:var(--s2)}
+.day.tdy .lb{color:var(--text)}
+nav{position:absolute;left:0;right:0;bottom:0;height:calc(var(--tabh) + var(--safe-b));
+ padding-bottom:var(--safe-b);background:var(--bg);border-top:1px solid var(--border);display:flex;z-index:10}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+ color:var(--subtle);transition:color var(--d1)}
+nav button.on{color:var(--text)}
+nav svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+nav span{font-size:10px;line-height:12px;font-weight:500}
+.runner{position:absolute;inset:0;background:var(--bg);z-index:20;display:flex;flex-direction:column;
+ transform:translateY(100%);transition:transform var(--d4) var(--ease-ios)}
+.runner.on{transform:translateY(0)}
+.rhead{padding:calc(var(--safe-t) + var(--s5)) var(--g) 0;display:flex;align-items:baseline;
+ justify-content:space-between;gap:var(--s4);flex-shrink:0}
+.rex{padding:var(--s6) var(--g) 0;flex-shrink:0}
+.rex h1{font-size:22px;line-height:28px;font-weight:500;letter-spacing:-.018em}
+.rex .where{font-size:13px;line-height:18px;color:var(--muted);margin-top:var(--s1)}
+.ticks{display:flex;gap:var(--s2);margin-top:var(--s5);align-items:center}
+.tick{height:2px;width:22px;background:var(--border);border-radius:1px;transition:background var(--d2)}
+.tick.done{background:var(--text)}.tick.now{background:var(--muted)}.tick.miss{background:var(--subtle)}
+.ticklbl{font-size:13px;color:var(--subtle);margin-left:var(--s2)}
+.ticklbl .n{font-size:13px;font-weight:400}
+.hero{flex:1;display:flex;flex-direction:column;justify-content:center;padding:var(--s5) var(--g);
+ min-height:0;gap:var(--s3)}
+.figure{display:flex;align-items:flex-start;gap:var(--s3);
+ transition:opacity var(--d3) var(--ease-ios),transform var(--d3) var(--ease-ios)}
+.figure.swap{opacity:0;transform:translateY(12px)}
+.figure .v{font-size:80px;line-height:.92;letter-spacing:-.02em}
+.figure .u{font-size:20px;line-height:25px;color:var(--subtle);font-weight:400;transform:translateY(12px)}
+.target{font-size:17px;color:var(--muted)}.target .n{font-size:17px;color:var(--text)}
+.note{font-size:13px;line-height:18px;color:var(--subtle)}
+.loadline{font-family:var(--mono);font-size:13px;line-height:18px;color:var(--muted);font-variant-numeric:tabular-nums}
+.lastline{border-top:1px solid var(--border);padding-top:var(--s3);margin-top:var(--s2);font-size:13px;
+ line-height:18px;color:var(--subtle);display:flex;gap:var(--s4)}
+.lastline .n{font-size:13px;color:var(--muted);font-weight:400}
+.rctl{padding:0 var(--g) calc(var(--safe-b) + var(--s5));flex-shrink:0}
+.nudge{display:flex;align-items:center;justify-content:space-between;padding-bottom:var(--s4);
+ border-bottom:1px solid var(--border);margin-bottom:var(--s4)}
+.nudge button{min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;
+ font-family:var(--mono);font-size:17px;color:var(--muted);transition:color var(--d1),transform var(--d1)}
+.nudge button:active{color:var(--text);transform:scale(.97)}
+.nudge .inc{font-size:13px;color:var(--subtle);letter-spacing:.02em}
+.secondary{display:flex;justify-content:space-between;margin-top:var(--s4)}
+.secondary button{font-size:17px;color:var(--muted);min-height:44px;display:flex;align-items:center}
+.secondary button:active{color:var(--text)}
+.upnextline{font-size:13px;line-height:18px;color:var(--subtle);margin-top:var(--s4);
+ padding-top:var(--s4);border-top:1px solid var(--border)}
+.rest{position:absolute;inset:0;background:var(--bg);z-index:25;display:flex;flex-direction:column;
+ padding:calc(var(--safe-t) + var(--s5)) var(--g) calc(var(--safe-b) + var(--s5));
+ transform:translateY(100%);transition:transform var(--d4) var(--ease-ios)}
+.rest.on{transform:translateY(0)}
+.rest .clock{flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--s3)}
+.rest .t{font-size:80px;line-height:.92;letter-spacing:-.02em}
+.rest .line{height:2px;background:var(--border);border-radius:1px;overflow:hidden;margin-top:var(--s6)}
+.rest .line i{display:block;height:100%;background:var(--muted);width:100%;transform-origin:left;
+ transition:transform 1s linear}
+.nextblock{border-top:1px solid var(--border);padding-top:var(--s5);margin-bottom:var(--s5)}
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:30;opacity:0;pointer-events:none;
+ transition:opacity var(--d2)}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:31;background:var(--surface);
+ border-top:1px solid var(--border);border-radius:20px 20px 0 0;
+ padding:var(--s6) var(--g) calc(var(--safe-b) + var(--s6));transform:translateY(100%);
+ transition:transform var(--d4) var(--ease-ios);max-height:82%;overflow-y:auto}
+.sheet.on{transform:translateY(0)}
+.sum{position:absolute;inset:0;background:var(--bg);z-index:40;overflow-y:auto;
+ padding:calc(var(--safe-t) + var(--s8)) var(--g) calc(var(--safe-b) + var(--s6));
+ transform:translateY(100%);transition:transform var(--d4) var(--ease-ios)}
+.sum.on{transform:translateY(0)}
+.figs{display:flex;gap:var(--s9);margin:var(--s7) 0}
+.fig .k{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--subtle);font-weight:500}
+.fig .v{font-size:28px;line-height:34px;margin-top:var(--s2);letter-spacing:-.018em}
+.toast{position:absolute;left:var(--g);right:var(--g);bottom:calc(var(--safe-b) + var(--s5));
+ background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:var(--s3) var(--s4);
+ font-size:13px;line-height:18px;color:var(--muted);z-index:50;opacity:0;transform:translateY(6px);
+ transition:opacity var(--d2),transform var(--d2);pointer-events:none}
+.toast.on{opacity:1;transform:translateY(0)}
+.update{position:absolute;left:var(--g);right:var(--g);top:calc(var(--safe-t) + var(--s3));
+ background:var(--surface);border:1px solid var(--border);border-radius:12px;
+ padding:var(--s3) var(--s4);z-index:60;display:none;align-items:center;justify-content:space-between;
+ gap:var(--s4);font-size:13px;line-height:18px;color:var(--muted)}
+.update.on{display:flex}
+.update button{color:var(--accent);font-size:13px;font-weight:600;flex-shrink:0;min-height:32px;
+ display:flex;align-items:center}
+.empty{color:var(--subtle);font-size:15px;line-height:20px;padding:var(--s6) 0}
+.fld{margin-bottom:var(--s4)}
+.fld label{display:block;font-size:13px;color:var(--subtle);margin-bottom:var(--s2);
+ letter-spacing:.06em;text-transform:uppercase;font-weight:500}
+.seg{display:flex;gap:var(--s2);flex-wrap:wrap}
+.seg button{flex:1;min-width:64px;min-height:44px;border:1px solid var(--border);border-radius:10px;
+ display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:15px}
+.seg button.on{border-color:var(--text);color:var(--text)}
+.spark{display:flex;align-items:flex-end;gap:3px;height:28px;margin-top:var(--s2)}
+.spark i{flex:1;background:var(--border);border-radius:1px;min-height:2px}
+.spark i.hi{background:var(--muted)}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}
+ .figure{transition:opacity 100ms linear!important;transform:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+ <section class="page on" id="p-today"></section>
+ <section class="page" id="p-plan"></section>
+ <section class="page" id="p-progress"></section>
+ <section class="page" id="p-gym"></section>
+ <section class="page" id="p-settings"></section>
+
+ <nav>
+  <button class="on" data-t="today"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span>Today</span></button>
+  <button data-t="plan"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h5"/></svg><span>Plan</span></button>
+  <button data-t="progress"><svg viewBox="0 0 24 24"><path d="M4 18l5-6 4 3 7-8"/></svg><span>Progress</span></button>
+  <button data-t="gym"><svg viewBox="0 0 24 24"><path d="M6 9v6M18 9v6M9 7v10M15 7v10M9 12h6"/></svg><span>Gyms</span></button>
+  <button data-t="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg><span>Settings</span></button>
+ </nav>
+
+ <div class="runner" id="runner">
+  <div class="rhead"><div class="eyebrow" id="rTitle">Session</div>
+   <button class="meta" id="quit" style="min-height:44px;display:flex;align-items:center">End</button></div>
+  <div class="rex"><h1 id="exName"></h1><div class="where" id="exWhere"></div>
+   <div class="ticks" id="ticks"></div></div>
+  <div class="hero">
+   <div class="figure" id="figure"><span class="v n" id="wt">0</span><span class="u" id="unit">kg</span></div>
+   <div class="target">target <span class="n" id="reps">0</span> reps</div>
+   <div class="note" id="note"></div><div class="loadline" id="loadline"></div>
+   <div class="lastline" id="lastline"></div>
+  </div>
+  <div class="rctl">
+   <div class="nudge"><button id="minus" aria-label="Decrease">−</button>
+    <span class="inc" id="incLbl"></span><button id="plus" aria-label="Increase">+</button></div>
+   <button class="btn" id="confirm">Done</button>
+   <div class="secondary"><button id="swap">Swap</button><button id="missed">Missed reps</button></div>
+   <div class="upnextline" id="upnext"></div>
+  </div>
+  <div class="rest" id="rest">
+   <div class="eyebrow">Rest</div>
+   <div class="clock"><div class="t n" id="clock">0:00</div><div class="line"><i id="line"></i></div></div>
+   <div class="nextblock"><div class="eyebrow">Next</div>
+    <div style="margin-top:var(--s2)" id="nextV"></div>
+    <div class="n" style="margin-top:var(--s1)" id="nextN"></div></div>
+   <button class="btn" id="skipRest">Start set</button>
+  </div>
+ </div>
+
+ <div class="scrim" id="scrim"></div>
+ <div class="sheet" id="sheet"></div>
+ <div class="sum" id="sum"></div>
+ <div class="toast" id="toast"></div>
+ <div class="update" id="update"><span>New version ready</span>
+  <button id="doUpdate">Reload</button></div>
+</div>
+
+<script>
+/* ════ storage ════════════════════════════════════════ */
+const KEY='barbell.v1';
+let D=null;
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){toast('Could not save — storage full?')}};
+const uid=()=>Math.random().toString(36).slice(2,9);
+const today=()=>new Date().toISOString().slice(0,10);
+const days=(a,b)=>Math.round((new Date(b)-new Date(a))/864e5);
+
+function seed(){
+ const m=(gym,brand,name,kind,inc)=>({id:uid(),gym,brand,name,kind,inc});
+ const g1=uid(),g2=uid();
+ const M=[
+  m(g1,'Eleiko','Barbell','bar',2.5), m(g1,'Dumbbells','Dumbbells','db',2),
+  m(g1,'Hammer Strength','Iso-Lateral Row','stack',5),
+  m(g1,'Hammer Strength','Shoulder Press','stack',5),
+  m(g1,'Matrix','Cable station','stack',2.5), m(g1,'Matrix','Lat Pulldown','stack',5),
+  m(g1,'Life Fitness','Chest Press','stack',5), m(g1,'Prime','RS Row','stack',5),
+  m(g2,'Home','Adjustable dumbbells','db',2),
+ ];
+ const ex=(mId,name,pat)=>({id:uid(),machine:mId,name,pattern:pat});
+ const E=[
+  ex(M[0].id,'Barbell Bench Press','h-push'), ex(M[0].id,'Barbell Row','h-pull'),
+  ex(M[0].id,'Overhead Press','v-push'), ex(M[0].id,'Back Squat','squat'),
+  ex(M[1].id,'Incline DB Press','h-push'), ex(M[1].id,'DB Lateral Raise','lat'),
+  ex(M[2].id,'Iso-Lateral Row','h-pull'), ex(M[3].id,'Machine Shoulder Press','v-push'),
+  ex(M[4].id,'Cable Lateral Raise','lat'), ex(M[4].id,'Triceps Pushdown','arm'),
+  ex(M[5].id,'Lat Pulldown','v-pull'), ex(M[6].id,'Machine Chest Press','h-push'),
+  ex(M[7].id,'Chest-Supported Row','h-pull'),
+ ];
+ const it=(exId,sets,lo,hi,seedWt,rest)=>({id:uid(),ex:exId,sets,lo,hi,seed:seedWt,rest});
+ const S=[
+  {id:uid(),name:'Push A',items:[it(E[0].id,3,6,8,60,150),it(E[4].id,3,8,10,24,120),
+    it(E[7].id,3,8,10,40,120),it(E[8].id,4,12,15,9,60)]},
+  {id:uid(),name:'Pull A',items:[it(E[6].id,3,8,10,70,120),it(E[10].id,3,8,10,50,120),
+    it(E[12].id,3,10,12,45,90),it(E[1].id,3,6,8,50,120)]},
+  {id:uid(),name:'Legs A',items:[it(E[3].id,4,5,8,70,180)]},
+  {id:uid(),name:'Push B',items:[it(E[2].id,4,5,8,35,150),it(E[11].id,3,8,12,45,90),
+    it(E[5].id,4,12,15,8,60),it(E[9].id,3,10,12,25,60)]},
+ ];
+ return {v:1,settings:{unit:'kg',rest:120,round:2.5},
+  gyms:[{id:g1,name:'Main gym'},{id:g2,name:'Home'}],activeGym:g1,
+  machines:M,exercises:E,sessions:S,order:S.map(s=>s.id),nextIdx:0,history:[]};
+}
+function load(){
+ try{const r=localStorage.getItem(KEY); D=r?JSON.parse(r):seed()}catch(e){D=seed()}
+ if(!D||!D.v)D=seed(); save();
+}
+/* ════ helpers ════════════════════════════════════════ */
+const mach=id=>D.machines.find(m=>m.id===id);
+const exr=id=>D.exercises.find(e=>e.id===id);
+const gym=id=>D.gyms.find(g=>g.id===id);
+const sess=id=>D.sessions.find(s=>s.id===id);
+const U=()=>D.settings.unit;
+const fmt=v=>Number.isInteger(v)?String(v):String(+v.toFixed(2));
+const roundTo=(v,inc)=>Math.max(0,Math.round(v/inc)*inc);
+/* Deload: nearest step to −10%, but guaranteed at least one step below current.
+   Flooring over-corrects on coarse machines (11kg on 2.5 steps would drop 32%). */
+const deload=(cur,inc)=>{let d=roundTo(cur*0.9,inc);if(d>=cur)d=cur-inc;return Math.max(inc,d)};
+
+function pastFor(exId){
+ return D.history.filter(h=>h.entries.some(e=>e.ex===exId))
+  .sort((a,b)=>b.date.localeCompare(a.date))
+  .map(h=>({date:h.date,entry:h.entries.find(e=>e.ex===exId)}));
+}
+/* the progression rule — deterministic, explainable */
+function target(item){
+ const p=pastFor(item.ex), inc=mach(exr(item.ex).machine).inc;
+ if(!p.length) return {wt:item.seed,why:'starting weight'};
+ const last=p[0], lw=last.entry.sets[0]?.wt ?? item.seed;
+ const gap=days(last.date,today());
+ if(gap>14) return {wt:deload(lw,inc),why:`${gap} days off — stepped back`};
+ const hitAll=last.entry.sets.length>=item.sets && last.entry.sets.every(s=>s.ok&&s.reps>=item.hi);
+ if(hitAll) return {wt:roundTo(lw+inc,inc),why:`up ${fmt(inc)} — all sets at ${item.hi}`};
+ const missedLast=s=>s.sets.some(x=>!x.ok);
+ if(p.length>1 && missedLast(last.entry) && missedLast(p[1].entry))
+  return {wt:deload(lw,inc),why:'missed twice — down 10%'};
+ return {wt:lw,why:'holding — last session incomplete'};
+}
+function lastLine(exId){
+ const p=pastFor(exId); if(!p.length)return '';
+ const s=p[0].entry.sets; if(!s.length)return '';
+ return `${fmt(s[0].wt)} × ${s.map(x=>x.reps).join(', ')}`;
+}
+/* ════ ui plumbing ════════════════════════════════════ */
+const $=i=>document.getElementById(i);
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');
+ clearTimeout(t._x);t._x=setTimeout(()=>t.classList.remove('on'),2400)}
+function openSheet(html){$('sheet').innerHTML=html;$('scrim').classList.add('on');$('sheet').classList.add('on')}
+function closeSheet(){$('scrim').classList.remove('on');$('sheet').classList.remove('on')}
+$('scrim').onclick=closeSheet;
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+ document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+ $('p-'+b.dataset.t).classList.add('on'); renderAll();
+});
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ════ TODAY ══════════════════════════════════════════ */
+function renderToday(){
+ const s=sess(D.order[D.nextIdx%D.order.length]);
+ const dn=new Date(); const wd=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][dn.getDay()];
+ const mo=['January','February','March','April','May','June','July','August','September','October','November','December'][dn.getMonth()];
+ const items=s.items.map(i=>{const t=target(i);return`<div><span>${esc(exr(i.ex).name)}</span>
+  <span class="n">${fmt(t.wt)} × ${i.hi}</span></div>`}).join('');
+ const est=s.items.reduce((a,i)=>a+i.sets*((i.rest||D.settings.rest)+45),0)/60;
+ // week strip
+ const start=new Date(dn); start.setDate(dn.getDate()-((dn.getDay()+6)%7));
+ let strip='';
+ for(let i=0;i<7;i++){const d=new Date(start);d.setDate(start.getDate()+i);
+  const ds=d.toISOString().slice(0,10);
+  const h=D.history.find(x=>x.date===ds);
+  const isT=ds===today();
+  strip+=`<div class="day${isT?' tdy':''}"><div class="bar"><i style="height:${h?Math.min(100,h.volume/120):0}%"></i></div>
+   <div class="lb">${'MTWTFSS'[i]}</div></div>`;
+ }
+ const donew=D.history.filter(h=>days(start.toISOString().slice(0,10),h.date)>=0).length;
+ const recent=D.history.slice(-2).reverse().map(h=>`<div class="row"><div class="l">
+  <div class="t">${esc(sess(h.session)?.name||'Session')}</div>
+  <div class="s">${h.date} · ${h.mins} min · ${h.sets} sets</div></div>
+  <div class="r"><span class="n">${h.volume.toLocaleString()}</span> ${U()}<div class="d">volume</div></div></div>`).join('')
+  ||`<div class="empty">Nothing logged yet. Your first session will appear here.</div>`;
+ // lifts that moved
+ const moved=D.exercises.map(e=>{const p=pastFor(e.id);
+  if(p.length<2)return null;
+  const a=p[1].entry.sets[0]?.wt,b=p[0].entry.sets[0]?.wt;
+  return a!=null&&b!=null&&b!==a?{name:e.name,from:a,to:b,n:p.length}:null}).filter(Boolean).slice(0,3);
+ const movedH=moved.length?moved.map(m=>`<div class="row"><div class="l"><div class="t">${esc(m.name)}</div></div>
+  <div class="r"><span class="n">${fmt(m.from)}</span> → <span class="n">${fmt(m.to)}</span>
+  <div class="d">${m.n} sessions</div></div></div>`).join('')
+  :`<div class="empty">Two sessions on a lift and its movement shows here.</div>`;
+ $('p-today').innerHTML=`
+  <header><div class="eyebrow">${wd} ${dn.getDate()} ${mo}</div>
+   <h1 class="h-lg" style="margin-top:var(--s2)">${esc(s.name)}</h1>
+   <div class="sub" style="margin-top:var(--s1)">${esc(gym(D.activeGym).name)} · session ${D.history.length+1}</div></header>
+  <div class="card"><div class="top"><div class="h-md">Today's session</div>
+    <div class="meta n">${s.items.length} lifts · ~${Math.round(est)} min</div></div>
+   <div class="plist">${items}</div>
+   <button class="btn" onclick="startSession('${s.id}')">Start session</button></div>
+  <div class="sect">This week</div><div class="week">${strip}</div>
+  <div class="meta" style="margin-top:var(--s4)">${donew} session${donew===1?'':'s'} logged this week</div>
+  <div class="sect">Recent</div>${recent}
+  <div class="sect">Moved recently</div>${movedH}`;
+}
+
+/* ════ PLAN ═══════════════════════════════════════════ */
+function renderPlan(){
+ const rows=D.order.map((id,i)=>{const s=sess(id);
+  return`<button class="row" onclick="editSession('${id}')"><div class="l"><div class="t">${esc(s.name)}</div>
+   <div class="s">${s.items.length} lifts</div></div>
+   <div class="r meta">${i===D.nextIdx%D.order.length?'Next':''}<span class="chev">›</span></div></button>`}).join('');
+ $('p-plan').innerHTML=`
+  <header><h1 class="h-lg">Plan</h1>
+   <div class="sub" style="margin-top:var(--s1)">${D.order.length} sessions in rotation</div></header>
+  <div class="sect">Sessions</div>${rows}
+  <button class="btn quiet" style="margin-top:var(--s6)" onclick="addSession()">Add a session</button>
+  <div class="sect">Progression rules</div>
+  <div class="row"><div class="l"><div class="t">All sets at top of range</div></div><div class="r meta">+ one step</div></div>
+  <div class="row"><div class="l"><div class="t">Any set missed</div></div><div class="r meta">repeat</div></div>
+  <div class="row"><div class="l"><div class="t">Missed twice running</div></div><div class="r meta">− 10%</div></div>
+  <div class="row"><div class="l"><div class="t">Gap over 14 days</div></div><div class="r meta">− 10%</div></div>
+  <div class="meta" style="margin-top:var(--s5);line-height:18px">Fixed rules, applied per machine. The app never guesses.</div>`;
+}
+window.editSession=id=>{const s=sess(id);
+ const rows=s.items.map((i,ix)=>`<div class="row"><div class="l"><div class="t">${esc(exr(i.ex).name)}</div>
+  <div class="s">${esc(mach(exr(i.ex).brand||exr(i.ex).machine)?.brand||'')} ${esc(mach(exr(i.ex).machine).name)} · ${i.sets}×${i.lo}–${i.hi} · rest ${i.rest}s</div></div>
+  <button class="r meta" onclick="rmItem('${id}',${ix})">Remove</button></div>`).join('')
+  ||'<div class="empty">No lifts yet.</div>';
+ openSheet(`<div class="h-md">${esc(s.name)}</div>
+  <div class="sub" style="margin:var(--s1) 0 var(--s6)">Tap Remove to delete, or add a lift below</div>
+  ${rows}
+  <button class="btn quiet" style="margin-top:var(--s5)" onclick="addItem('${id}')">Add a lift</button>
+  <button class="btn danger" style="margin-top:var(--s3)" onclick="delSession('${id}')">Delete session</button>`);
+};
+window.rmItem=(sid,ix)=>{sess(sid).items.splice(ix,1);save();editSession(sid);renderAll()};
+window.delSession=id=>{D.sessions=D.sessions.filter(s=>s.id!==id);D.order=D.order.filter(x=>x!==id);
+ if(!D.order.length){D.sessions=[{id:uid(),name:'Session 1',items:[]}];D.order=[D.sessions[0].id]}
+ D.nextIdx=0;save();closeSheet();renderAll();toast('Session deleted')};
+window.addSession=()=>{openSheet(`<div class="h-md">New session</div>
+ <div class="fld" style="margin-top:var(--s5)"><label>Name</label>
+ <input id="nsName" placeholder="Push B" autocomplete="off"></div>
+ <button class="btn" onclick="doAddSession()">Create</button>`)};
+window.doAddSession=()=>{const n=($('nsName').value||'').trim()||'New session';
+ const s={id:uid(),name:n,items:[]};D.sessions.push(s);D.order.push(s.id);save();closeSheet();renderAll();
+ toast('Created. Add lifts to it.')};
+window.addItem=sid=>{
+ const list=D.exercises.map(e=>{const m=mach(e.machine);
+  return`<button class="row" onclick="pickItem('${sid}','${e.id}')"><div class="l">
+   <div class="t">${esc(e.name)}</div><div class="s">${esc(m.brand)} · ${esc(gym(m.gym).name)}</div></div>
+   <div class="chev">›</div></button>`}).join('');
+ openSheet(`<div class="h-md">Add a lift</div>
+  <div class="sub" style="margin:var(--s1) 0 var(--s6)">From your machine library</div>${list}`)};
+window.pickItem=(sid,exId)=>{
+ openSheet(`<div class="h-md">${esc(exr(exId).name)}</div>
+  <div class="sub" style="margin:var(--s1) 0 var(--s6)">Set the target</div>
+  <div class="fld"><label>Sets</label><input id="iSets" type="number" inputmode="numeric" value="3"></div>
+  <div class="fld"><label>Rep range</label><div class="seg">
+   <input id="iLo" type="number" inputmode="numeric" value="8" style="flex:1">
+   <input id="iHi" type="number" inputmode="numeric" value="10" style="flex:1"></div></div>
+  <div class="fld"><label>Starting weight (${U()})</label><input id="iSeed" type="number" inputmode="decimal" value="20"></div>
+  <div class="fld"><label>Rest (seconds)</label><input id="iRest" type="number" inputmode="numeric" value="120"></div>
+  <button class="btn" onclick="doPickItem('${sid}','${exId}')">Add</button>`)};
+window.doPickItem=(sid,exId)=>{
+ sess(sid).items.push({id:uid(),ex:exId,sets:+$('iSets').value||3,lo:+$('iLo').value||8,
+  hi:+$('iHi').value||10,seed:+$('iSeed').value||20,rest:+$('iRest').value||120});
+ save();closeSheet();renderAll();toast('Added')};
+
+/* ════ PROGRESS ═══════════════════════════════════════ */
+function renderProgress(){
+ const byGym={};
+ D.exercises.forEach(e=>{const p=pastFor(e.id);if(!p.length)return;
+  const m=mach(e.machine),g=gym(m.gym).name;(byGym[g]=byGym[g]||[]).push({e,m,p})});
+ let html='';
+ Object.keys(byGym).forEach(g=>{
+  html+=`<div class="sect">${esc(g)}</div>`;
+  byGym[g].forEach(({e,m,p})=>{
+   const cur=p[0].entry.sets[0]?.wt, first=p[p.length-1].entry.sets[0]?.wt;
+   const d=+(cur-first).toFixed(2), wks=Math.max(1,Math.ceil(days(p[p.length-1].date,p[0].date)/7));
+   const vals=p.slice(0,8).reverse().map(x=>x.entry.sets[0]?.wt||0);
+   const mx=Math.max(...vals,1);
+   const spark=vals.map(v=>`<i class="${v===mx?'hi':''}" style="height:${Math.max(8,v/mx*100)}%"></i>`).join('');
+   html+=`<div class="row"><div class="l"><div class="t">${esc(e.name)}</div>
+    <div class="s">${esc(m.brand)} ${esc(m.name)}</div>
+    <div class="spark">${spark}</div></div>
+    <div class="r"><span class="n">${fmt(cur)}</span> ${U()}
+    <div class="d">${d>0?'+':''}${fmt(d)} in ${wks} wk${wks===1?'':'s'}</div></div></div>`});
+ });
+ if(!html)html=`<div class="empty">Nothing here yet. Log a session and every lift you did will appear, tracked against the specific machine you used it on.</div>`;
+ const n=D.history.length;
+ $('p-progress').innerHTML=`<header><h1 class="h-lg">Progress</h1>
+  <div class="sub" style="margin-top:var(--s1)">Per lift, per machine</div></header>${html}
+  <div class="empty" style="margin-top:var(--s7)">${n<8?`Charts arrive at four weeks of history on a lift. ${n} session${n===1?'':'s'} logged so far.`:'Trend charts coming in the next build.'}</div>`;
+}
+
+/* ════ GYMS ═══════════════════════════════════════════ */
+function renderGym(){
+ let html='';
+ D.gyms.forEach(g=>{
+  const ms=D.machines.filter(m=>m.gym===g.id);
+  html+=`<div class="sect">${esc(g.name)} · ${ms.length} machine${ms.length===1?'':'s'}${g.id===D.activeGym?' · active':''}</div>`;
+  ms.forEach(m=>{const exs=D.exercises.filter(e=>e.machine===m.id);
+   html+=`<button class="row" onclick="editMachine('${m.id}')"><div class="l">
+    <div class="t">${esc(m.brand)} ${esc(m.name)}</div>
+    <div class="s">${exs.length?exs.map(e=>esc(e.name)).join(' · '):'no lifts yet'} · ${fmt(m.inc)}${U()} steps</div></div>
+    <div class="chev">›</div></button>`});
+  if(g.id!==D.activeGym)html+=`<button class="row" onclick="setGym('${g.id}')"><div class="l">
+   <div class="t" style="color:var(--muted)">Train here today</div></div><div class="chev">›</div></button>`;
+ });
+ $('p-gym').innerHTML=`<header><h1 class="h-lg">Gyms</h1>
+  <div class="sub" style="margin-top:var(--s1)">Weights are tracked per machine, not per exercise</div></header>
+  ${html}
+  <button class="btn quiet" style="margin-top:var(--s7)" onclick="addMachine()">Add a machine</button>
+  <button class="btn quiet" style="margin-top:var(--s3)" onclick="addGym()">Add a gym</button>
+  <div class="meta" style="margin-top:var(--s4);line-height:18px">
+   60 kg on a Hammer Strength row is not 60 kg on a Prime row. Add each machine the first time you use it.</div>`;
+}
+window.setGym=id=>{D.activeGym=id;save();renderAll();toast('Switched gym')};
+window.addGym=()=>openSheet(`<div class="h-md">New gym</div>
+ <div class="fld" style="margin-top:var(--s5)"><label>Name</label><input id="gName" placeholder="University gym"></div>
+ <button class="btn" onclick="doAddGym()">Add</button>`);
+window.doAddGym=()=>{const n=($('gName').value||'').trim();if(!n)return toast('Give it a name');
+ D.gyms.push({id:uid(),name:n});save();closeSheet();renderAll();toast('Gym added')};
+window.addMachine=()=>{
+ const gs=D.gyms.map(g=>`<button class="${g.id===D.activeGym?'on':''}" data-g="${g.id}">${esc(g.name)}</button>`).join('');
+ openSheet(`<div class="h-md">Add a machine</div>
+  <div class="sub" style="margin:var(--s1) 0 var(--s6)">Ten seconds now, there for good</div>
+  <div class="fld"><label>Gym</label><div class="seg" id="mGym">${gs}</div></div>
+  <div class="fld"><label>Brand</label><input id="mBrand" placeholder="Hammer Strength" autocomplete="off"></div>
+  <div class="fld"><label>Machine</label><input id="mName" placeholder="Iso-Lateral Row" autocomplete="off"></div>
+  <div class="fld"><label>Type</label><div class="seg" id="mKind">
+   <button class="on" data-k="stack">Stack</button><button data-k="bar">Barbell</button>
+   <button data-k="db">Dumbbell</button></div></div>
+  <div class="fld"><label>Smallest step (${U()})</label><input id="mInc" type="number" inputmode="decimal" value="5"></div>
+  <div class="fld"><label>Lift name</label><input id="mEx" placeholder="Iso-Lateral Row" autocomplete="off"></div>
+  <button class="btn" onclick="doAddMachine()">Add machine</button>`);
+ ['mGym','mKind'].forEach(id=>$(id).onclick=e=>{if(!e.target.dataset)return;
+  [...$(id).children].forEach(c=>c.classList.toggle('on',c===e.target))});
+};
+window.doAddMachine=()=>{
+ const g=$('mGym').querySelector('.on')?.dataset.g||D.activeGym;
+ const k=$('mKind').querySelector('.on')?.dataset.k||'stack';
+ const b=($('mBrand').value||'').trim()||'Unbranded', n=($('mName').value||'').trim();
+ if(!n)return toast('Name the machine');
+ const m={id:uid(),gym:g,brand:b,name:n,kind:k,inc:+$('mInc').value||5};
+ D.machines.push(m);
+ const en=($('mEx').value||'').trim()||n;
+ D.exercises.push({id:uid(),machine:m.id,name:en,pattern:'other'});
+ save();closeSheet();renderAll();toast('Machine added')};
+window.editMachine=id=>{const m=mach(id);
+ openSheet(`<div class="h-md">${esc(m.brand)} ${esc(m.name)}</div>
+  <div class="sub" style="margin:var(--s1) 0 var(--s6)">${esc(gym(m.gym).name)}</div>
+  <div class="fld"><label>Smallest step (${U()})</label><input id="emInc" type="number" inputmode="decimal" value="${m.inc}"></div>
+  <button class="btn" onclick="saveMachine('${id}')">Save</button>
+  <button class="btn danger" style="margin-top:var(--s3)" onclick="delMachine('${id}')">Delete machine</button>`)};
+window.saveMachine=id=>{mach(id).inc=+$('emInc').value||mach(id).inc;save();closeSheet();renderAll();toast('Saved')};
+window.delMachine=id=>{const exs=D.exercises.filter(e=>e.machine===id).map(e=>e.id);
+ D.machines=D.machines.filter(m=>m.id!==id);D.exercises=D.exercises.filter(e=>e.machine!==id);
+ D.sessions.forEach(s=>s.items=s.items.filter(i=>!exs.includes(i.ex)));
+ save();closeSheet();renderAll();toast('Machine removed')};
+
+/* ════ SETTINGS ═══════════════════════════════════════ */
+function renderSettings(){
+ const bytes=(()=>{try{return new Blob([localStorage.getItem(KEY)||'']).size}catch(e){return 0}})();
+ $('p-settings').innerHTML=`<header><h1 class="h-lg">Settings</h1>
+  <div class="sub" style="margin-top:var(--s1)">Barbell · local only, nothing leaves this device</div></header>
+  <div class="sect">Units</div>
+  <div class="row"><div class="l"><div class="t">Weight</div></div>
+   <div class="r"><div class="seg" style="width:150px">
+    <button class="${U()==='kg'?'on':''}" onclick="setUnit('kg')">kg</button>
+    <button class="${U()==='lb'?'on':''}" onclick="setUnit('lb')">lb</button></div></div></div>
+  <div class="sect">Session</div>
+  <div class="row"><div class="l"><div class="t">Default rest</div>
+   <div class="s">Used when a lift has none set</div></div>
+   <div class="r"><span class="n">${D.settings.rest}</span>s</div></div>
+  <div class="row"><div class="l"><div class="t">Keep screen awake</div>
+   <div class="s">During a session</div></div><div class="r meta">On</div></div>
+  <div class="sect">Data</div>
+  <div class="row"><div class="l"><div class="t">Sessions logged</div></div>
+   <div class="r"><span class="n">${D.history.length}</span></div></div>
+  <div class="row"><div class="l"><div class="t">Machines</div></div>
+   <div class="r"><span class="n">${D.machines.length}</span></div></div>
+  <div class="row"><div class="l"><div class="t">Storage used</div></div>
+   <div class="r"><span class="n">${(bytes/1024).toFixed(1)}</span> KB</div></div>
+  <button class="btn quiet" style="margin-top:var(--s6)" onclick="backup()">Back up to a file</button>
+  <div class="meta" style="margin-top:var(--s3);line-height:18px">
+   Safari can clear local data from apps it thinks are unused. A backup is the only thing standing
+   between a browser reset and losing your history.</div>
+  <button class="btn quiet" style="margin-top:var(--s5)" onclick="restore()">Restore from a file</button>
+  <div class="sect">Danger</div>
+  <button class="btn danger" style="margin-top:var(--s5)" onclick="wipe()">Erase everything</button>
+  <div class="sect">About</div>
+  <div class="row"><div class="l"><div class="t">Build</div></div>
+   <div class="r n">${typeof BUILD!=='undefined'?BUILD:'dev'}</div></div>
+  <div class="row"><div class="l"><div class="t">Offline</div>
+   <div class="s">Works with no signal</div></div>
+   <div class="r meta">${navigator.serviceWorker&&navigator.serviceWorker.controller?'Ready':'Not active'}</div></div>
+  <div class="row"><div class="l"><div class="t">Storage</div>
+   <div class="s">Protected from automatic clearing</div></div>
+   <div class="r meta" id="persistState">checking…</div></div>
+  <div class="meta" style="margin-top:var(--s7);line-height:18px">Barbell · data v${D.v} · ${today()}</div>`;
+ if(navigator.storage&&navigator.storage.persisted){
+  navigator.storage.persisted().then(p=>{const el=$('persistState');if(el)el.textContent=p?'Persistent':'Best effort'})
+   .catch(()=>{});}
+}
+window.setUnit=u=>{D.settings.unit=u;save();renderAll()};
+window.backup=async()=>{
+ const blob=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});
+ const file=new File([blob],`barbell-${today()}.json`,{type:'application/json'});
+ if(navigator.canShare&&navigator.canShare({files:[file]})){
+  try{await navigator.share({files:[file],title:'Barbell backup'});return}catch(e){}}
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+ a.download=`barbell-${today()}.json`;a.click();URL.revokeObjectURL(a.href);
+ toast('Backup saved');
+};
+window.restore=()=>{const i=document.createElement('input');i.type='file';i.accept='application/json';
+ i.onchange=()=>{const f=i.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const o=JSON.parse(r.result);if(!o.v)throw 0;D=o;save();renderAll();toast('Restored')}
+   catch(e){toast('That file was not a Barbell backup')}};r.readAsText(f)};i.click()};
+window.wipe=()=>{openSheet(`<div class="h-md">Erase everything?</div>
+ <div class="sub" style="margin:var(--s1) 0 var(--s6)">Every session, machine and plan. This cannot be undone
+ and there is no cloud copy.</div>
+ <button class="btn danger" onclick="doWipe()">Yes, erase it all</button>
+ <button class="btn quiet" style="margin-top:var(--s3)" onclick="closeSheet()">Cancel</button>`)};
+window.doWipe=()=>{localStorage.removeItem(KEY);D=seed();save();closeSheet();renderAll();toast('Erased')};
+
+/* ════ RUNNER ═════════════════════════════════════════ */
+let R=null,timer=null;
+window.startSession=id=>{
+ const s=sess(id);
+ if(!s.items.length)return toast('Add some lifts to this session first');
+ R={sid:id,ix:0,set:0,t0:Date.now(),
+    items:s.items.map(i=>{const t=target(i);
+      return{item:i,ex:exr(i.ex),m:mach(exr(i.ex).machine),wt:t.wt,why:t.why,
+             hist:lastLine(i.ex),logged:[]}})};
+ $('rTitle').textContent=s.name;
+ $('runner').classList.add('on'); paint();
+ if('wakeLock' in navigator)navigator.wakeLock.request('screen').catch(()=>{});
+};
+const R_cur=()=>R.items[R.ix];
+function loadline(c){
+ if(c.m.kind==='bar'){const s=(c.wt-20)/2;if(s<=0)return'empty bar';
+  const P=[25,20,15,10,5,2.5,1.25],out=[];let r=s;
+  P.forEach(w=>{while(r>=w-.001){out.push(fmt(w));r=+(r-w).toFixed(2)}});
+  return r>0.01?'≈ '+out.join(' + ')+' per side':out.join(' + ')+'  per side'}
+ if(c.m.kind==='db')return fmt(c.wt)+' each hand';
+ return 'pin at '+fmt(c.wt);
+}
+function paint(anim){
+ const c=R_cur(),f=$('figure'),it=c.item;
+ const go=()=>{
+  $('exName').textContent=c.ex.name;
+  $('exWhere').textContent=`${c.m.brand} ${c.m.name} · ${gym(c.m.gym).name}`;
+  $('wt').textContent=fmt(c.wt); $('unit').textContent=U();
+  $('reps').textContent=`${it.lo}–${it.hi}`;
+  $('incLbl').textContent=fmt(c.m.inc)+' '+U()+' steps';
+  $('loadline').textContent=loadline(c);
+  $('note').textContent=c.why;
+  $('lastline').innerHTML=c.hist?`<span>last time</span><span class="n">${c.hist}</span>`:'<span>first time on this machine</span>';
+  let h='';for(let i=0;i<it.sets;i++){const v=c.logged[i];
+   h+=`<span class="tick ${v?(v.ok?'done':'miss'):(i===R.set?'now':'')}"></span>`}
+  $('ticks').innerHTML=h+`<span class="ticklbl">set <span class="n">${Math.min(R.set+1,it.sets)}</span> of <span class="n">${it.sets}</span></span>`;
+  const rest=R.items.slice(R.ix+1).map(x=>x.ex.name);
+  $('upnext').textContent=rest.length?'Then: '+rest.join(' · '):'Last lift of the session';
+ };
+ if(anim){f.classList.add('swap');setTimeout(()=>{go();f.classList.remove('swap')},180)}else go();
+}
+function advance(ok){
+ const c=R_cur(),it=c.item;
+ c.logged[R.set]={wt:c.wt,reps:ok?it.hi:it.lo,ok};
+ R.set++;
+ if(R.set>=it.sets){
+  if(R.ix>=R.items.length-1){paint();return finish()}
+  R.ix++;R.set=0;paint(true);
+ }else paint();
+ startRest(it.rest||D.settings.rest);
+}
+function startRest(sec){
+ const c=R_cur();
+ $('nextV').textContent=`${c.ex.name} · set ${R.set+1}`;
+ $('nextN').textContent=`${fmt(c.wt)} ${U()} × ${c.item.lo}–${c.item.hi}`;
+ $('rest').classList.add('on');
+ let left=sec;
+ const tick=()=>{$('clock').textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');
+  $('line').style.transform='scaleX('+(left/sec)+')';
+  if(left<=0)return endRest(); left--};
+ tick();clearInterval(timer);timer=setInterval(tick,1000);
+}
+function endRest(){clearInterval(timer);$('rest').classList.remove('on')}
+function finish(){
+ endRest();
+ const entries=R.items.filter(c=>c.logged.length)
+   .map(c=>({ex:c.ex.id,sets:c.logged.filter(Boolean)}));
+ if(!entries.length){$('runner').classList.remove('on');R=null;return renderAll()}
+ const sets=entries.reduce((a,e)=>a+e.sets.length,0);
+ const volume=Math.round(entries.reduce((a,e)=>a+e.sets.reduce((x,s)=>x+s.wt*s.reps,0),0));
+ const mins=Math.max(1,Math.round((Date.now()-R.t0)/60000));
+ const rec={id:uid(),date:today(),session:R.sid,entries,sets,volume,mins};
+ D.history.push(rec);
+ D.nextIdx=(D.order.indexOf(R.sid)+1)%D.order.length;
+ save();
+ const rows=R.items.map(c=>{
+  const prev=pastFor(c.ex.id)[1];
+  const pw=prev?prev.entry.sets[0]?.wt:null;
+  const d=pw!=null?+(c.wt-pw).toFixed(2):null;
+  return`<div class="row"><div class="l"><div class="t">${esc(c.ex.name)}</div>
+   <div class="s">${esc(c.m.brand)} ${esc(c.m.name)}</div></div>
+   <div class="r"><span class="n">${fmt(c.wt)}</span> ${U()}
+   <div class="d">${d==null?'first time':d>0?'↑ '+fmt(d):d===0?'held':'↓ '+fmt(-d)}</div></div></div>`}).join('');
+ const next=R.items.map(c=>{const t=target(c.item);
+  return`<div class="row"><div class="l"><div class="t">${esc(c.ex.name)}</div>
+   <div class="s">${t.why}</div></div>
+   <div class="r"><span class="n">${fmt(t.wt)}</span> ${U()}</div></div>`}).join('');
+ $('sum').innerHTML=`<h2 class="h-lg">${esc(sess(R.sid).name)}</h2>
+  <div class="sub" style="margin-top:var(--s1)">${mins} min · ${R.items.length} lifts · ${today()}</div>
+  <div class="figs"><div class="fig"><div class="k">Volume</div>
+    <div class="v n">${volume.toLocaleString()}</div></div>
+   <div class="fig"><div class="k">Sets</div><div class="v n">${sets}</div></div></div>
+  <div class="sect">This session</div>${rows}
+  <div class="sect">Next time</div>${next}
+  <button class="btn quiet" style="margin-top:var(--s8)" onclick="closeSum()">Close</button>`;
+ setTimeout(()=>$('sum').classList.add('on'),450);
+}
+window.closeSum=()=>{$('sum').classList.remove('on');$('runner').classList.remove('on');R=null;renderAll()};
+$('confirm').onclick=()=>advance(true);
+$('missed').onclick=()=>{advance(false);toast('Logged. This weight repeats next session.')};
+$('minus').onclick=()=>{const c=R_cur();c.wt=Math.max(0,+(c.wt-c.m.inc).toFixed(2));paint()};
+$('plus').onclick=()=>{const c=R_cur();c.wt=+(c.wt+c.m.inc).toFixed(2);paint()};
+$('skipRest').onclick=endRest;
+$('quit').onclick=()=>finish();
+$('swap').onclick=()=>{
+ const c=R_cur();
+ const alts=D.exercises.filter(e=>e.id!==c.ex.id&&mach(e.machine).gym===c.m.gym)
+  .sort((a,b)=>(a.pattern===c.ex.pattern?-1:0)-(b.pattern===c.ex.pattern?-1:0));
+ if(!alts.length)return toast('No other machines at this gym yet');
+ openSheet(`<div class="h-md">Swap exercise</div>
+  <div class="sub" style="margin:var(--s1) 0 var(--s6)">At ${esc(gym(c.m.gym).name)} · same pattern first</div>
+  ${alts.map(e=>{const m=mach(e.machine);
+   return`<button class="row" onclick="doSwap('${e.id}')"><div class="l"><div class="t">${esc(e.name)}</div>
+    <div class="s">${esc(m.brand)} ${esc(m.name)}${e.pattern===c.ex.pattern?' · same pattern':''}</div></div>
+    <div class="chev">›</div></button>`}).join('')}`)};
+window.doSwap=exId=>{const c=R_cur(),e=exr(exId),m=mach(e.machine);
+ c.ex=e;c.m=m;c.hist=lastLine(exId);
+ const p=pastFor(exId);
+ c.wt=p.length?p[0].entry.sets[0].wt:roundTo(c.wt,m.inc);
+ c.why=p.length?'from your history on this machine':'first time on this machine';
+ closeSheet();paint(true);toast('Swapped. This machine keeps its own history.')};
+
+/* ════ service worker + updates ═══════════════════════ */
+const BUILD='2026-08-05a';
+if('serviceWorker' in navigator){
+ window.addEventListener('load',()=>{
+  navigator.serviceWorker.register('./sw.js').then(reg=>{
+   // A waiting worker means a new version is installed but held back
+   // deliberately, so it can never swap in mid-session.
+   const offer=w=>{if(!w)return;$('update').classList.add('on');
+     $('doUpdate').onclick=()=>{w.postMessage('skip');$('update').classList.remove('on')}};
+   if(reg.waiting&&navigator.serviceWorker.controller)offer(reg.waiting);
+   reg.addEventListener('updatefound',()=>{const w=reg.installing;if(!w)return;
+     w.addEventListener('statechange',()=>{
+       if(w.state==='installed'&&navigator.serviceWorker.controller)offer(w)})});
+   // Check for a new build whenever the app is brought back to the front
+   document.addEventListener('visibilitychange',()=>{
+     if(document.visibilityState==='visible'&&!R)reg.update().catch(()=>{})});
+  }).catch(()=>{});
+  let reloading=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(reloading)return;reloading=true;location.reload()});
+ });
+}
+/* Ask the browser to treat this origin's data as persistent. Not a
+   guarantee, but it markedly reduces the odds of eviction. */
+if(navigator.storage&&navigator.storage.persist){
+ navigator.storage.persisted().then(p=>{if(!p)navigator.storage.persist().catch(()=>{})}).catch(()=>{});
+}
+
+/* ════ boot ═══════════════════════════════════════════ */
+function renderAll(){renderToday();renderPlan();renderProgress();renderGym();renderSettings()}
+load();renderAll();
+</script>
+</body>
+</html>
